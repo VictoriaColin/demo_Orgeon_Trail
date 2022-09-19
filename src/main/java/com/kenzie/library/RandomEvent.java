@@ -17,15 +17,15 @@ public class RandomEvent{ //will happen every 5 days during journey. will be rat
         this.roll = roll.nextInt(13);
 
         if (this.roll <= 6) {
-            BARD();
+            bard();
         } else if (this.roll > 6 && this.roll < 9) {
-            HIGHWAYMAN();
+            highwayman();
         } else if (this.roll > 9 && this.roll < 13) {
-            BROKEN_WAGON();
+            brokenWagon();
         }
     }
 
-    public void BARD(){
+    public void bard(){
 
         Random bardRoll = new Random();
         int activateBard = bardRoll.nextInt(7);
@@ -101,7 +101,7 @@ public class RandomEvent{ //will happen every 5 days during journey. will be rat
         }
     }
 
-    public int HIGHWAYMAN(){
+    public int highwayman(){
 
         Random highwaymanRoll = new Random();
         int foodRoll = highwaymanRoll.nextInt(10);
@@ -120,7 +120,7 @@ public class RandomEvent{ //will happen every 5 days during journey. will be rat
         return totalFood;
     }
 
-    public int BROKEN_WAGON(){
+    public int brokenWagon(){
 
         Random brokenWagon = new Random();
         int loot = brokenWagon.nextInt(20) + 1;
