@@ -11,6 +11,8 @@ public class Main {
 
     static int milesTravelled;
 
+    static int huntOfTheDay;
+
     static final int TOTAL_MILES = 1600;
 
     static final int MILES_PER_DAY = 20;
@@ -23,12 +25,13 @@ public class Main {
 
     static final int HUNT_DAYS = 4;
 
+    static final int RANDOM_EVENT_DAYS = 5;
+
     static final int NUM_TRAVELERS = 6;
 
     static final int NUM_HUNTERS = 4;
 
     static final int NUM_DOCTORS = 2;
-
 
     /*** DO NOT CHANGE THE CODE BELOW THIS LINE ***/
     public static void main (String[] args) {
@@ -161,14 +164,18 @@ public class Main {
             int wagon_size = (int) OregonTrail.getStaticFieldValue("WAGON_SIZE");
             @SuppressWarnings("unchecked")
             int max_days = (int) OregonTrail.getStaticFieldValue("MAX_DAYS");
+
             @SuppressWarnings("unchecked")
             int hunt_days = (int) OregonTrail.getStaticFieldValue("HUNT_DAYS");
+            int random_event_days = (int) OregonTrail.getStaticFieldValue("RANDOM_EVENT_DAYS");
             @SuppressWarnings("unchecked")
             int food_exchange = (int) OregonTrail.getStaticFieldValue("FOOD_EXCHANGE");
             @SuppressWarnings("unchecked")
             int miles_per_day = (int) OregonTrail.getStaticFieldValue("MILES_PER_DAY");
             @SuppressWarnings("unchecked")
             int total_miles = (int) OregonTrail.getStaticFieldValue("TOTAL_MILES");
+
+            int hunt_of_the_day = (int) OregonTrail.getStaticFieldValue("huntOfTheDay");
 
             @SuppressWarnings("unchecked")
             int days_travelled = (int) OregonTrail.getStaticFieldValue("daysTravelled");
@@ -195,7 +202,7 @@ public class Main {
             OregonTrail.loadWagon(wagon,num_travelers,num_doctors,num_hunters);
 
             // Display starting state
-            OregonTrail.displayStatus(wagon, days_travelled, miles_travelled);
+            OregonTrail.displayStatus(wagon, days_travelled, miles_travelled, wagon.totalFood());
 
             // preparing eat method in Hunter and Traveler for runtime invocation
             @SuppressWarnings("unchecked")
@@ -204,7 +211,7 @@ public class Main {
             Traveler[] passengerArray = (Traveler[]) getPassengers.invoke(wagon);
 
             for (int i = 0; i < max_days; i++) {
-                  OregonTrail.feedWagon(passengerArray);
+                OregonTrail.feedWagon(passengerArray);
 
                 //HUNTING ROUTINE
                 // Check if hunting day - use modulo math to see if HUNT_DAYS divides evenly into totalDays
@@ -219,6 +226,24 @@ public class Main {
                     huntFlag = false;
                 }
 
+                //HUNT FOR WILDLIFE
+                if(huntFlag){
+                    Wildlife hunt = new Wildlife();
+
+                    Traveler[] travelers = wagon.getPassengers();
+                    for(Traveler traveler : travelers) {
+                        if (traveler instanceof Hunter) {
+                            traveler.setFood(traveler.getFood()+huntOfTheDay);
+                        }
+                    }
+                }
+
+                //RANDOM EVENTS
+                //Check if random event day - use modulo
+                if (days_travelled % random_event_days == 0 && days_travelled != 0) {
+                    RandomEvent event = new RandomEvent(wagon);
+                }
+
                 //Sharing food and healing
                 // preparing shouldQuarantine for runtime invocation
                 @SuppressWarnings("unchecked")
@@ -226,19 +251,19 @@ public class Main {
 
                 // preparing Hunter giveFood for runtime invocation
                 @SuppressWarnings("unchecked")
-                Method giveFood = Hunter.class.getMethod("giveFood",Traveler.class,int.class);
+                Method giveFood = Hunter.class.getMethod("giveFood", Traveler.class, int.class);
 
                 // preparing Doctor heal for runtime invocation
                 @SuppressWarnings("unchecked")
-                Method heal = Doctor.class.getMethod("heal",Traveler.class);
+                Method heal = Doctor.class.getMethod("heal", Traveler.class);
 
                 // Check quarantine status and care for passengers
-                if ((boolean)shouldQuarantine.invoke(wagon)) {
-                    OregonTrail.quarantineCare(passengerArray,food_exchange);
+                if ((boolean) shouldQuarantine.invoke(wagon)) {
+                    OregonTrail.quarantineCare(passengerArray, food_exchange);
                 }
 
                 // If healthy and not a hunt day, advance milesTraveled
-                if (!(boolean)shouldQuarantine.invoke(wagon) && !huntFlag) {
+                if (!(boolean) shouldQuarantine.invoke(wagon) && !huntFlag) {
                     miles_travelled = miles_travelled + miles_per_day;
                 }
 
@@ -246,7 +271,7 @@ public class Main {
                 days_travelled = days_travelled + 1;
 
                 // Display daily status
-                OregonTrail.displayStatus(wagon, days_travelled, miles_travelled);
+                OregonTrail.displayStatus(wagon, days_travelled, miles_travelled, wagon.totalFood());
             }
 
             //Check after MAX_DAYS loop if the wagon made it to Oregon
