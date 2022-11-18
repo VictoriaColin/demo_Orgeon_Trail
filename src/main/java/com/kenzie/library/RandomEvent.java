@@ -59,8 +59,8 @@ public class RandomEvent{ //will happen every 5 days during journey. will be rat
 
         String defaultStatement = "The bard is sleeping. A traveler shakes him, but he continues snoring.";
 
-        switch (activateBard) { //Intellij helped me out with formatting here.
-            case 1 -> {
+        switch (activateBard) {
+            case 1: {
                 System.out.println(bardIntro);
                 System.out.println(storyOne);
                 System.out.println(travelerInterestedOutro);
@@ -69,12 +69,12 @@ public class RandomEvent{ //will happen every 5 days during journey. will be rat
                     traveler.setIsHealthy(true);
                 }
             }
-            case 2 -> {
+            case 2: {
                 System.out.println(bardIntro);
                 System.out.println(storyTwo);
                 System.out.println(travelerBoredOutro);
             }
-            case 3 -> {
+            case 3: {
                 System.out.println(bardIntro);
                 System.out.println(storyThree);
                 System.out.println(travelerInterestedOutro);
@@ -82,20 +82,20 @@ public class RandomEvent{ //will happen every 5 days during journey. will be rat
                     traveler.setIsHealthy(true);
                 }
             }
-            case 4 -> {
+            case 4: {
                 System.out.println(nonStoryOptionOne);
             }
-            case 5 -> {
+            case 5:  {
                 System.out.println(nonStoryOptionTwo);
             }
-            case 6 -> {
+            case 6: {
                 System.out.println(nonStoryOptionThree);
                 //Travelers enjoy music. Health restored.
                 for(Traveler traveler : travelers){
                     traveler.setIsHealthy(true);
                 }
             }
-            default -> {
+            default: {
                 System.out.println(defaultStatement);
             }
         }
